@@ -8,6 +8,14 @@ let display_down = document.createElement("div");
 let new_number = true;
 let last_operation = "";
 
+const button_text = [
+    ["x²", "CE", "C", "Back"],
+    ["7", "8", "9", "÷"],
+    ["4", "5", "6", "x"],
+    ["1", "2", "3", "-"],
+    [".", "0", "=", "+"],
+];
+
 function createDisplay(){    
     display_up.classList.add("display_up", "displays");
     display_up.textContent = "";
@@ -18,15 +26,7 @@ function createDisplay(){
     div_display.appendChild(display_down);
 }
 
-function createButtons(){
-    const button_text = [
-        ["x²", "CE", "C", "Back"],
-        ["7", "8", "9", "÷"],
-        ["4", "5", "6", "x"],
-        ["1", "2", "3", "-"],
-        [".", "0", "=", "+"],
-    ];
-    
+function createButtons(){    
     for (let row=0; row < button_text[1].length; row++){
         let div_row = document.createElement("div");
         div_row.classList.add(`row${row}`, "rows")
@@ -42,7 +42,7 @@ function createButtons(){
             let operator_buttons = "=+-÷x";
             let button_char = document.createElement("p");
             button.addEventListener("click", (e) => {
-                writeDisplay(button_text[col][row]);
+                onButtonClick(button_text[col][row]);
             })
             button.addEventListener("mouseover", (e) => {
                 
@@ -93,7 +93,6 @@ function createButtons(){
 
 
 function operate(str_equation){
-
     let result = 0;
     let splitted = "";
     for(const char of "+-x÷²"){
@@ -129,7 +128,8 @@ function operate(str_equation){
     return result;
 }
 
-function writeDisplay(string=""){
+
+function onButtonClick(string=""){
     if(string === ""){
         return;
     }
@@ -165,6 +165,18 @@ function writeDisplay(string=""){
         case "x²":
             display_down.textContent = operate(display_down.textContent+"²");
             new_number = true;
+            break;
+        case ".":
+            if(display_down.textContent.includes(".")){
+                return;
+            }
+            if(display_down.textContent === "" || new_number){
+                display_down.textContent = "0.";
+            }
+            else{
+                display_down.textContent += ".";
+            }
+            new_number = false;
             break;
         default:
             if("÷x-+".includes(string)){
