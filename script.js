@@ -202,7 +202,9 @@ function onButtonClick(string=""){
             }
             break;
         }
-        
+        if (display_down.textContent.length > 19){
+            display_down.textContent = display_down.textContent.slice(0, 19);
+        }
 }
 
 
