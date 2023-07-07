@@ -1,6 +1,7 @@
 const div_calculator = document.querySelector("#calculator");
 const div_display = document.querySelector("#display");
 const div_buttons = document.querySelector("#buttons");
+const body = document.querySelector("body");
 
 let display_up = document.createElement("div");
 let display_down = document.createElement("div");
@@ -178,8 +179,11 @@ function onButtonClick(string=""){
             }
             new_number = false;
             break;
+        case "/":
+            break;
         default:
             if("÷x-+".includes(string)){
+                
                 display_up.textContent = display_down.textContent + string;
                 new_number = true;
             }
@@ -193,17 +197,45 @@ function onButtonClick(string=""){
                 new_number = false;
             }
             else{
+                
                 display_down.textContent += string;
             }
             break;
         }
+        
 }
 
+
+body.addEventListener("keydown", (e) => {
+    const key = e.key;
+    console.log(key);
+    switch(key){
+        case "Enter":
+            onButtonClick("=");
+            break;
+        case "Backspace":
+            onButtonClick("Back");
+            break;
+        case ",":
+            onButtonClick(".");
+            break;
+        case "*":
+            onButtonClick("x");
+            break;
+        case "/":
+            onButtonClick("÷");
+            break;
+    }
+    if("0123456789C/x-+.".includes(key)){
+        onButtonClick(key);
+    }
+    
+})
 
 function init(){
     createDisplay();
     createButtons();
-    writeDisplay("0");
+    onButtonClick("0");
     new_number = true;
 }
 
