@@ -19,21 +19,22 @@ function createDisplay(){
 }
 
 function createButtons(){
-    const ROW = 4;
-    const COL = 5;
-    let button_text = [
-        ["%", "CE", "C", "Back"],
+    const button_text = [
+        ["x²", "CE", "C", "Back"],
         ["7", "8", "9", "÷"],
         ["4", "5", "6", "x"],
         ["1", "2", "3", "-"],
         [".", "0", "=", "+"],
     ];
     
-    for (let row=0; row < ROW; row++){
+    for (let row=0; row < button_text[1].length; row++){
         let div_row = document.createElement("div");
         div_row.classList.add(`row${row}`, "rows")
 
-        for(let col=0; col < COL; col++){
+        for(let col=0; col < button_text.length; col++){
+            if(button_text[col][row] === ""){
+                continue;
+            }
             let button = document.createElement("div");
             button.classList.add("button");
             
@@ -93,25 +94,34 @@ function createButtons(){
 
 function operate(str_equation){
 
-    let result = "";
-    for(const char of "+-x÷"){
+    let result = 0;
+    let splitted = "";
+    for(const char of "+-x÷²"){
         if(str_equation.includes(char)){
-            result = str_equation.slice(0, -1).split(char);
+            splitted = str_equation.slice(0, -1).split(char);
+            console.log(splitted);
             switch(char){
                 case "+":
-                    result = result[0]*1 + result[1]*1;
+                    result = splitted[0]*1 + splitted[1]*1;
                     break;
                 case "-":
-                    result = result[0]*1 - result[1]*1;
+                    result = splitted[0]*1 - splitted[1]*1;
                     break;
                 case "x":
-                    result = result[0]*1 * result[1]*1;
+                    result = splitted[0]*1 * splitted[1]*1;
                     break;
                 case "÷":
-                    result = result[0]*1 / result[1]*1;
+                    if(splitted[1] === "0"){
+                        display_up.textContent = "";
+                        return "Division by 0!"
+                    }
+                    result = splitted[0]*1 / splitted[1]*1;
                     break;
+                case "²":
+                    return splitted[0] ** 2;
+                
             }
-            last_operation = char + result[1];
+            last_operation = char + splitted[1];
             break;
         }
     }
@@ -120,6 +130,9 @@ function operate(str_equation){
 }
 
 function writeDisplay(string=""){
+    if(string === ""){
+        return;
+    }
     switch(string){
         case "CE":
             display_down.textContent = "0";
@@ -138,14 +151,19 @@ function writeDisplay(string=""){
             break;
         case "=":
             if(new_number && display_up.textContent.includes("=")){
-                /* TODO slice to */
-                display_up.textContent = display_down.textContent + last_operation;
-                console.log(display_up.textContent);
+                if(display_down.textContent.includes("Division")){
+                    return;
+                }
+                display_up.textContent = display_down.textContent + last_operation + "=";
             }
             else{
                 display_up.textContent = display_up.textContent + display_down.textContent + string;
             }
             display_down.textContent = operate(display_up.textContent);
+            new_number = true;
+            break;
+        case "x²":
+            display_down.textContent = operate(display_down.textContent+"²");
             new_number = true;
             break;
         default:
@@ -173,7 +191,7 @@ function writeDisplay(string=""){
 function init(){
     createDisplay();
     createButtons();
-    writeDisplay(operate("1+2="));
+    writeDisplay("0");
     new_number = true;
 }
 

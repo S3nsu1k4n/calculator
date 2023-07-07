@@ -20,11 +20,13 @@
     flex: 0.5;
     text-align: end;
     font-size: 20px;
+    padding-right: 5px;
 }
 .display_down{
     flex: 1;
     text-align: end;
     font-size: 30px;
+    padding-right: 5px;
 }
 
 #buttons{
